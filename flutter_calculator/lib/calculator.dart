@@ -10,6 +10,14 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
+  String output = '0';
+
+  String temp = '0';
+  double num1 = 0;
+  double num2 = 0;
+  String operand = "";
+  String history = "";
+
   Widget buildbutton(String buttonValue, int flexValue) {
     return Expanded(
       flex: flexValue,
@@ -26,7 +34,60 @@ class _CalculatorState extends State<Calculator> {
                 ? Color(0xffD8D8D8)
                 : (buttonValue == "=" ? Color(0xff72A2C8) : Color(0xffF2F2F2)),
           ),
-          onPressed: () {},
+          onPressed: () {
+            setState(() {
+              if (buttonValue == 'AC') {
+                temp = '0';
+                num1 = 0;
+                num2 = 0;
+                operand = "";
+              } else if (buttonValue == '+' ||
+                  buttonValue == '-' ||
+                  buttonValue == 'x' ||
+                  buttonValue == '/' ||
+                  buttonValue == '%') {
+                num1 = double.parse(output);
+                operand = buttonValue;
+                temp = '0';
+              } else if (buttonValue == '.') {
+                if (temp.contains('.')) {
+                  return;
+                } else {
+                  temp = temp + buttonValue;
+                }
+              } else if (buttonValue == "=") {
+                num2 = double.parse(output);
+
+                if (operand == '+') {
+                  temp = (num1 + num2).toString();
+                } else if (operand == '-') {
+                  temp = (num1 - num2).toString();
+                } else if (operand == 'x') {
+                  temp = (num1 * num2).toString();
+                } else if (operand == '/') {
+                  temp = (num1 / num2).toString();
+                } else if (operand == '%') {
+                  temp = (num1 % num2).toString();
+                }
+
+                num1 = 0;
+                num2 = 0;
+                operand = "";
+              } else {
+                temp = temp + buttonValue;
+              }
+
+              setState(() {
+                output = double.parse(temp).toString();
+              });
+
+              if (buttonValue != 'AC') {
+                history = history + buttonValue;
+              } else {
+                history = '';
+              }
+            });
+          },
           child: Container(
             padding: EdgeInsets.all(15),
             child: Text(
@@ -64,7 +125,7 @@ class _CalculatorState extends State<Calculator> {
             alignment: Alignment.centerRight,
             padding: EdgeInsets.symmetric(vertical: 0, horizontal: 12.5),
             child: Text(
-              "0",
+              history,
               style: TextStyle(
                 fontSize: 20,
                 color: Color(0xff4E4E4E),
@@ -75,7 +136,7 @@ class _CalculatorState extends State<Calculator> {
             alignment: Alignment.centerRight,
             padding: EdgeInsets.fromLTRB(12.5, 12.5, 12.5, 25),
             child: Text(
-              "0",
+              output,
               style: TextStyle(
                 fontSize: 40,
                 color: Color(0xff000000),
