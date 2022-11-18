@@ -15,14 +15,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: Color(0xff9900CC),
-            backgroundColor: Color(0xffF7F7F7), // foreground (text) color
-          ),
-        ),
-      ),
       home: Calculator(),
     );
   }
