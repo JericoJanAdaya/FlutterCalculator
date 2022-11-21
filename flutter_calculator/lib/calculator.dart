@@ -81,7 +81,10 @@ class _CalculatorState extends State<Calculator> {
                 output = double.parse(temp).toString();
               });
 
-              if (buttonValue != 'AC') {
+              if (buttonValue != 'AC' && buttonValue == '=') {
+                history = history + buttonValue;
+                history = history + output;
+              } else if (buttonValue != 'AC') {
                 history = history + buttonValue;
               } else {
                 history = '';
