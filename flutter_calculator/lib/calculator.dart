@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class Calculator extends StatefulWidget {
   const Calculator({super.key});
@@ -10,13 +11,9 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
-  String output = '0';
-
-  String temp = '0';
-  double num1 = 0;
-  double num2 = 0;
-  String operand = "";
-  String history = "";
+  String history = "0";
+  String output = "0";
+  String expression = "";
 
   Widget buildbutton(String buttonValue, int flexValue) {
     return Expanded(
@@ -26,9 +23,10 @@ class _CalculatorState extends State<Calculator> {
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: buttonValue == "AC" ||
+                    buttonValue == "C" ||
                     buttonValue == "%" ||
                     buttonValue == "/" ||
-                    buttonValue == "x" ||
+                    buttonValue == "*" ||
                     buttonValue == "-" ||
                     buttonValue == "+"
                 ? Color(0xffD8D8D8)
@@ -36,58 +34,30 @@ class _CalculatorState extends State<Calculator> {
           ),
           onPressed: () {
             setState(() {
-              if (buttonValue == 'AC') {
-                temp = '0';
-                num1 = 0;
-                num2 = 0;
-                operand = "";
-              } else if (buttonValue == '+' ||
-                  buttonValue == '-' ||
-                  buttonValue == 'x' ||
-                  buttonValue == '/' ||
-                  buttonValue == '%') {
-                num1 = double.parse(output);
-                operand = buttonValue;
-                temp = '0';
-              } else if (buttonValue == '.') {
-                if (temp.contains('.')) {
-                  return;
-                } else {
-                  temp = temp + buttonValue;
+              if (buttonValue == "AC") {
+                history = "0";
+                output = "0";
+              } else if (buttonValue == "C") {
+                history = history.substring(0, history.length - 1);
+                if (history == "") {
+                  history = "0";
                 }
               } else if (buttonValue == "=") {
-                num2 = double.parse(output);
-
-                if (operand == '+') {
-                  temp = (num1 + num2).toString();
-                } else if (operand == '-') {
-                  temp = (num1 - num2).toString();
-                } else if (operand == 'x') {
-                  temp = (num1 * num2).toString();
-                } else if (operand == '/') {
-                  temp = (num1 / num2).toString();
-                } else if (operand == '%') {
-                  temp = (num1 % num2).toString();
+                expression = history;
+                try {
+                  Parser p = Parser();
+                  Expression exp = p.parse(expression);
+                  ContextModel cm = ContextModel();
+                  output = '${exp.evaluate(EvaluationType.REAL, cm)}';
+                } catch (e) {
+                  output = "Error";
                 }
-
-                num1 = 0;
-                num2 = 0;
-                operand = "";
               } else {
-                temp = temp + buttonValue;
-              }
-
-              setState(() {
-                output = double.parse(temp).toString();
-              });
-
-              if (buttonValue != 'AC' && buttonValue == '=') {
-                history = history + buttonValue;
-                history = history + output;
-              } else if (buttonValue != 'AC') {
-                history = history + buttonValue;
-              } else {
-                history = '';
+                if (history == "0") {
+                  history = buttonValue;
+                } else {
+                  history = history + buttonValue;
+                }
               }
             });
           },
@@ -151,6 +121,7 @@ class _CalculatorState extends State<Calculator> {
               Row(
                 children: [
                   buildbutton("AC", 2),
+                  buildbutton("C", 1),
                   buildbutton("%", 1),
                   buildbutton("/", 1),
                 ],
@@ -160,7 +131,7 @@ class _CalculatorState extends State<Calculator> {
                   buildbutton("7", 1),
                   buildbutton("8", 1),
                   buildbutton("9", 1),
-                  buildbutton("x", 1),
+                  buildbutton("*", 1),
                 ],
               ),
               Row(
@@ -183,7 +154,8 @@ class _CalculatorState extends State<Calculator> {
                 children: [
                   buildbutton("0", 1),
                   buildbutton(".", 1),
-                  buildbutton("=", 2),
+                  buildbutton("00", 2),
+                  buildbutton("=", 1),
                 ],
               ),
             ],
