@@ -62,7 +62,7 @@ class _CalculatorState extends State<Calculator> {
             });
           },
           child: Container(
-            padding: EdgeInsets.all(15),
+            padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
             child: Text(
               buttonValue,
               style: TextStyle(fontSize: 30, color: Color(0xff000000)),
