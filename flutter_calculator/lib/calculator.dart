@@ -49,6 +49,7 @@ class _CalculatorState extends State<Calculator> {
                   Expression exp = p.parse(expression);
                   ContextModel cm = ContextModel();
                   output = '${exp.evaluate(EvaluationType.REAL, cm)}';
+                  history = output;
                 } catch (e) {
                   output = "Error";
                 }
